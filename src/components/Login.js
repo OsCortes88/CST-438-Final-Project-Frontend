@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
+import "bootstrap/dist/css/bootstrap.min.css"
 import MainPage from './MainPage';
+import './Login.css';
 
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
@@ -26,28 +28,46 @@ function Login() {
     }
 
     if (isAuthenticated) {
-        return <MainPage />;
+        return <MainPage/>;
     } else {
         return (
-            <div className="App">
-            <table>
-            <tbody>
-            <tr><td>
-            <label htmlFor="username">Email</label>
-            </td><td>
-            <input type="text" name="username" value={user.username} onChange={onChange} />
-            </td></tr>
-            <tr><td>
-            <label htmlFor="password">Password</label>
-            </td><td>
-            <input type="text" name="password" value={user.password} onChange={onChange} />
-            </td></tr>
-            </tbody>
-            </table>
-
-            <br/>
-            <button id="submit" onClick={login}>Login</button>
+            <div id="login_body">
+                <div id='card'>
+                    <div id='card_content'>
+                        <div id='card_title'>
+                            <h2>LogIn</h2>
+                            <div className="underline_title"></div>
+                        </div>
+                        <form className="form" onSubmit={(e) => { e.preventDefault(); login();}}>
+                            <label id='username' htmlFor='username'>
+                                Email
+                            </label>
+                            <input
+                                type="text"
+                                className="form_content"
+                                name='username'
+                                value={user.username} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <label id='password' htmlFor='password'>
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                className="form_content"
+                                name='password'
+                                value={user.password} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <input id='submit_btn' type='submit' name='submit' value='Login'></input>
+                            <p id="signup">Don't have account yet?</p> 
+                            {/* Add link to signup later */}
+                        </form>
+                    </div>
                 </div>
+            </div>
         );
     }
 }
