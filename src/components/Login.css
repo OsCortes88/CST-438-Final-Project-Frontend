@@ -2,6 +2,7 @@
 body{
   background: -webkit-linear-gradient(bottom, #212126, #494952);
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 label{
