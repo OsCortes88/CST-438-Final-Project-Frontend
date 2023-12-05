@@ -8,7 +8,6 @@ function SignUp () {
     const history = useHistory();
 
     const onChange = (event) => {
-        console.log("change");
         setUser({...user, [event.target.name] : event.target.value});
     }
 
@@ -33,6 +32,7 @@ function SignUp () {
             // redirect user to login
             history.push('/');
         }
+        // TODO: else, display "user already exists" message
       } catch (error) {
         console.error(error);
       }
