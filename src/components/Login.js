@@ -27,7 +27,7 @@ function Login() {
     }
 
     if (isAuthenticated) {
-        return <MainPage/>;
+        window.location.href=('http://localhost:' + window.location.port + '/mainpage');
     } else {
         return (
             <div id="login_body">

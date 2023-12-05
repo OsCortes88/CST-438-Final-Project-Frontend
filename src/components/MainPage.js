@@ -21,14 +21,17 @@ const GameModal=({game, onClose}) =>{
 function MainPage() {
   const [games, setGames] = useState([]);
   const [moreGames, setMoreGames] = useState([]);
+  const [newGames, setNewGames] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
 
+  const token = sessionStorage.getItem("jwt");
 
   // Only changes games once upon loading.
   useEffect(() => {
     getGames();
-    getMoreGames();
+    // getMoreGames();
+    getNewGames();
   }, [])
 
   const getGames = async () => {
@@ -36,19 +39,32 @@ function MainPage() {
       // GET call to backend
       const response = await fetch('http://localhost:8080/videogames', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
       });
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.status}`);
       }
       const res = await response.json();
-      console.log(res);
       // assign response to games list
       setGames(res);
-      games.forEach(function(gameId, i){
-        console.log(gameId);
-      });
     } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const getNewGames = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/videogames/10/2', {
+        method: 'GET',
+        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+      });
+      if(!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+      const res = await response.json();
+      console.log(res);
+      setNewGames(res);
+    } catch(error) {
       console.error(error);
     }
   }
@@ -58,43 +74,37 @@ function MainPage() {
       // GET call to backend
       const temporaryList = [];
       for(let i = 5; i <= 8; i++) {
-        console.log('http://localhost:8080/videogame-info/' + i);
         const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
         });
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
         const res = await response.json();
         temporaryList.push(res);
-        console.log(temporaryList);
       }
       for(let i = 10; i <= 14; i++) {
-        console.log('http://localhost:8080/videogame-info/' + i);
         const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
         });
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
         const res = await response.json();
         temporaryList.push(res);
-        console.log(temporaryList);
       }
       for(let i = 20; i <= 25; i++) {
-        console.log('http://localhost:8080/videogame-info/' + i);
         const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
         });
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.status}`);
         }
         const res = await response.json();
         temporaryList.push(res);
-        console.log(temporaryList);
       }
       setMoreGames(temporaryList);
       console.log(getMoreGames);
