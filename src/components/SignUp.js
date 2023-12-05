@@ -1,5 +1,7 @@
+import './SignUp.css';
 import React, {useState} from 'react';
 import { useHistory } from 'react-router-dom';
+import {Link} from 'react-router-dom/cjs/react-router-dom.min'
 
 function SignUp () {
     const[user, setUser] = useState({email:'', firstName:'', lastName:'', password:''});
@@ -36,32 +38,74 @@ function SignUp () {
       }
     };
 
+    const linkStyle ={
+        textAlign: 'center',
+        color: "#212126",
+        fontFamily: 'Raleway',
+        fontSize: "10pt",
+        marginTop: "16px",
+        textDecoration: "none"
+    };
+
     return(
-        <div>
-            <h1>Sign Up</h1>
-            <table>
-                <tbody>
-                <tr>
-                    <td><label htmlFor="emial">Email</label></td>
-                    <td><input type="text" name="email" value={user.email} onChange={onChange} /></td>
-                </tr>
-                <tr>
-                    <td><label htmlFor="First name">First Name</label></td>
-                    <td><input type="text" name="firstName" value={user.firstName} onChange={onChange} /></td>
-                </tr>
-                <tr>
-                    <td><label htmlFor="Last name">Last Name</label></td>
-                    <td><input type="text" name="lastName" value={user.lastName} onChange={onChange} /></td>
-                </tr>
-                <tr>
-                    <td><label htmlFor="password">Password</label></td>
-                    <td><input type="text" name="password" value={user.password} onChange={onChange} /></td>
-                </tr>
-                </tbody>
-            </table>
-            <br></br>
-            <button id="submit" onClick={signUp}>Sign Up</button>
-        </div>
+        <div id="login_body">
+                <div id='card'>
+                    <div id='card_content'>
+                        <div id='card_title'>
+                            <h2>SignUp</h2>
+                            <div className="underline_title"></div>
+                        </div>
+                        <form className="form" onSubmit={(e) => { e.preventDefault(); signUp();}}>
+                            <label id='email' htmlFor='email'>
+                                Email
+                            </label>
+                            <input
+                                type="text"
+                                className="form_content"
+                                name='email'
+                                value={user.email} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <label id='firstName' htmlFor='first name'> 
+                                First Name
+                            </label>
+                            <input
+                                type="text"
+                                className="form_content"
+                                name='firstName'
+                                value={user.firstName} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <label id='lastName' htmlFor='last name'> 
+                                Last Name
+                            </label>
+                            <input
+                                type="text"
+                                className="form_content"
+                                name='lastName'
+                                value={user.lastName} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <label id='password' htmlFor='password'>
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                className="form_content"
+                                name='password'
+                                value={user.password} 
+                                onChange={onChange}
+                            />
+                            <div className='form_border'></div>
+                            <input id='submit_btn' type='submit' name='submit' value='Sign Up'></input>
+                            <Link to="/" style={linkStyle}>Already have an account? Log In</Link>
+                        </form>
+                    </div>
+                </div>
+            </div>
     );
 }
 export default SignUp;

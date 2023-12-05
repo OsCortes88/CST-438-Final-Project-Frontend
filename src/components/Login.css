@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
 body{
   background: -webkit-linear-gradient(bottom, #212126, #494952);
@@ -5,7 +6,7 @@ body{
 }
 
 label{
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 11pt;
 }
 
@@ -23,7 +24,7 @@ label{
 }
 
 #card_title{
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
   letter-spacing: 4px;
   padding-bottom: 23px;
   padding-top: 13px;
@@ -37,7 +38,7 @@ label{
   box-shadow: 0px 1px 8px #212126;
   cursor: pointer;
   color: white;
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
   height: 42.3px;
   margin: 0 auto;
   margin-top: 50px;
@@ -73,14 +74,6 @@ label{
   height: 2px;
   margin: -1.1rem auto 0 auto;
   width: 89px;
-}
-
-#signup {
-  color: #212126;
-  font-family: sans-serif;
-  font-size: 10pt;
-  margin-top: 16px;
-  text-align: center;
 }
 
 h2{

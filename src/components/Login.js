@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import MainPage from './MainPage';
 import './Login.css';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
-
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
     const[isAuthenticated, setAuth] = useState(false);
@@ -26,6 +25,15 @@ function Login() {
         })
         .catch(err => console.log(err));
     }
+
+    const linkStyle ={
+        textAlign: 'center',
+        color: "#212126",
+        fontFamily: 'Raleway',
+        fontSize: "10pt",
+        marginTop: "16px",
+        textDecoration: "none"
+    };
 
     if (isAuthenticated) {
         return <MainPage/>;
@@ -62,9 +70,9 @@ function Login() {
                             />
                             <div className='form_border'></div>
                             <input id='submit_btn' type='submit' name='submit' value='Login'></input>
+                            <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+                            <Link to="/signup" style={linkStyle}>Don't have account yet?</Link>
                         </form>
-                        <br></br>
-                        <Link to="/signup">Don't have account yet?</Link>
                     </div>
                 </div>
             </div>
