@@ -12,16 +12,21 @@ const GameModal=({game, onClose}) =>{
         <p>Release Date: {game.released}</p>
         <p>Rating: {game.rating}</p>
         <p>Avg Playtime: {game.playtime}</p>
-        <p>Age Rating: {game.esrb}</p>
+        <p>Age Rating: {game.esrb_rating}</p>
       </div>
     </div>
   );
 };
 
+const token = sessionStorage.getItem("jwt");
+
+// Grabbing URL parameters
+// const urlParams = new URLSearchParams(window.location.search);
+// const pageNumber = urlParams.get('page');
+// console.log(pageNumber);
+
 function MainPage() {
   const [games, setGames] = useState([]);
-  const [moreGames, setMoreGames] = useState([]);
-  const [newGames, setNewGames] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
 
@@ -30,31 +35,12 @@ function MainPage() {
   // Only changes games once upon loading.
   useEffect(() => {
     getGames();
-    // getMoreGames();
-    getNewGames();
   }, [])
 
   const getGames = async () => {
     try {
-      // GET call to backend
-      const response = await fetch('http://localhost:8080/videogames', {
-        method: 'GET',
-        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`);
-      }
-      const res = await response.json();
-      // assign response to games list
-      setGames(res);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  const getNewGames = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/videogames/10/2', {
+      // Get 20 games (first page)
+      const response = await fetch('http://localhost:8080/videogames/20/1', {
         method: 'GET',
         headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
       });
@@ -63,52 +49,8 @@ function MainPage() {
       }
       const res = await response.json();
       console.log(res);
-      setNewGames(res);
+      setGames(res);
     } catch(error) {
-      console.error(error);
-    }
-  }
-
-  const getMoreGames = async () => {
-    try {
-      // GET call to backend
-      const temporaryList = [];
-      for(let i = 5; i <= 8; i++) {
-        const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
-          method: 'GET',
-          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
-        const res = await response.json();
-        temporaryList.push(res);
-      }
-      for(let i = 10; i <= 14; i++) {
-        const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
-          method: 'GET',
-          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
-        const res = await response.json();
-        temporaryList.push(res);
-      }
-      for(let i = 20; i <= 25; i++) {
-        const response = await fetch(('http://localhost:8080/videogame-info/' + i), {
-          method: 'GET',
-          headers: {'Authorization' : token, 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
-        const res = await response.json();
-        temporaryList.push(res);
-      }
-      setMoreGames(temporaryList);
-      console.log(getMoreGames);
-    } catch (error) {
       console.error(error);
     }
   }
