@@ -120,13 +120,13 @@ function MainPage() {
             <i></i>
           </label>
           <div class="logo">
-            PlaceHolder
+            <img src="./logo.png" alt="logo"></img>
           </div>
           <div class="nav-wrapper">
             <ul>
-              <li><a href="/mainpage">Home</a></li>
-              <li><a href="/wishlist">WishList</a></li>
-              <li><a href="/" onclick={logout}>LogOut</a></li>
+              <li><a class="nav-link" href="/mainpage">Home</a></li>
+              <li><a class="nav-link" href="/wishlist">WishList</a></li>
+              <li><a class="nav-link" href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
@@ -134,7 +134,7 @@ function MainPage() {
       <br></br><br></br><hr></hr><br></br><br></br>
       {currentPage === 1 && (
         <div>
-          <h2 style={{ textAlign: 'center' }}>Featured Games</h2>
+          <h2>Featured Games</h2>
           <div class="slideshow-container">
             {games.slice(0,5).map((data, index) => {
               return(
@@ -148,25 +148,53 @@ function MainPage() {
             <a class="next" onClick={nextSlide}>&#10095;</a>
           </div>
           <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
+          <h3>Other Games</h3>
+          <div className="item-cards">
+            {games.slice(4,20).map((data) => (
+              <div key={data.id} className="item-card"> 
+                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
+                <div className="card_text">{data.name}</div>
+              </div>
+            ))}
+          </div>
+          <br></br><br></br>
+          <div className="center-pagination">
+            <div className="pagination">
+              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+              <span>Page {currentPage}</span>
+              <a class="next-page" onClick={nextPage}>&#10095;</a>
+            </div>
+          </div>
         </div>
       )}
-      <h3 style={{ textAlign: 'center' }}>Other Games</h3>
-      <div className="item-cards">
-        {games.slice(4,20).map((data) => (
-          <div key={data.id} className="item-card"> 
-            <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-            <div className="card_text">{data.name}</div>
+
+      {currentPage !== 1 && (
+        <div>
+          <h3>Other Games</h3>
+          <div className="item-cards">
+            {games.map((data) => (
+              <div key={data.id} className="item-card"> 
+                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
+                <div className="card_text">{data.name}</div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-        
+          <br></br><br></br>
+          <div className="center-pagination">
+            <div className="pagination">
+              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+              <span>Page {currentPage}</span>
+              <a class="next-page" onClick={nextPage}>&#10095;</a>
+            </div>
+          </div>
+        </div>
+      )}
+
       <br></br><br></br>
-      <div className="pagination">
-        <button onClick={prevPage} disabled={currentPage === 1}>Previous Page</button>
-        <span>Page {currentPage}</span>
-        <button onClick={nextPage}>Next Page</button>
-      </div>
-      
+      <footer className="footer">
+        <p>2023 California State University Final Project CST438.</p>
+      </footer>
+        
       {/* Render modal */}
       <Modal
         isOpen={selectedGame !== null}

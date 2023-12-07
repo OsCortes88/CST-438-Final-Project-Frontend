@@ -46,11 +46,15 @@ function Login() {
 
     const linkStyle ={
         textAlign: 'center',
-        color: "#212126",
-        fontFamily: 'Raleway',
+        color: "black",
         fontSize: "10pt",
         marginTop: "16px",
-        textDecoration: "none"
+        textDecoration: "none",
+        transition: 'color 0.3s ease',
+
+    ':hover': {
+        color: 'red',
+    },
     };
 
     if (isAuthenticated) {
