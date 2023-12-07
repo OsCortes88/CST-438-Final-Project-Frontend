@@ -5,19 +5,19 @@ import Modal from 'react-modal';
 
 const GameModal=({game, onClose}) =>{
 
-  const addGameToWishList = async () => {
+  const deleteGameFromWishList = async () => {
     try {
       console.log(game);
-      const response = await fetch(`http://localhost:8080/add-game/${game.id}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:8080/delete-game/${game.gameId}`, {
+        method: 'DELETE',
         headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
-        body: JSON.stringify(game)
       });
       if(!response.ok) {
         throw new Error(`Failed to fetch data: ${response.status}`);
       }
       const res = await response.json();
       console.log(res);
+      window.location.reload(true);
     } catch(error) {
       console.error(error);
     }
@@ -29,11 +29,7 @@ const GameModal=({game, onClose}) =>{
         <span className="close" onClick={onClose}>&times;</span>
         <h2>{game.name}</h2>
         <img src={game.background_image} alt={game.name} />
-        <p>Release Date: {game.released}</p>
-        <p>Rating: {game.rating}</p>
-        <p>Avg Playtime: {game.playtime} hours</p>
-        <p>Age Rating: {game.esrb_rating}</p>
-        <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+        <input class='add_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
       </div>
     </div>
   );
@@ -46,8 +42,8 @@ const token = sessionStorage.getItem("jwt");
 // const pageNumber = urlParams.get('page');
 // console.log(pageNumber);
 
-function MainPage() {
-  const [games, setGames] = useState([]);
+function WishList() {
+  const [wishList, setWishList] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,7 +59,7 @@ function MainPage() {
   const getGames = async (page) => {
     try {
       // Get 20 games (first page)
-      const response = await fetch(`http://localhost:8080/videogames/20/${page}`, {
+      const response = await fetch(`http://localhost:8080/wishlist`, {
         method: 'GET',
         headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
       });
@@ -72,7 +68,7 @@ function MainPage() {
       }
       const res = await response.json();
       console.log(res);
-      setGames(res);
+      setWishList(res);
     } catch(error) {
       console.error(error);
     }
@@ -124,77 +120,33 @@ function MainPage() {
           </div>
           <div class="nav-wrapper">
             <ul>
-              <li><a class="nav-link" href="/mainpage">Home</a></li>
-              <li><a class="nav-link" href="/wishlist">WishList</a></li>
-              <li><a class="nav-link" href="/" onclick={logout}>LogOut</a></li>
+              <li><a href="/mainpage">Home</a></li>
+              <li><a href="/wishlist">WishList</a></li>
+              <li><a href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
       </div>
       <br></br><br></br><hr></hr><br></br><br></br>
-      {currentPage === 1 && (
-        <div>
-          <h2>Featured Games</h2>
-          <div class="slideshow-container">
-            {games.slice(0,5).map((data, index) => {
-              return(
-                <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
-                <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
-                <div class="text">{data.name}</div>
-              </div>
-              )
-            })}
-            <a class="prev" onClick={prevSlide}>&#10094;</a>
-            <a class="next" onClick={nextSlide}>&#10095;</a>
+      <h3 style={{ textAlign: 'center' }}>Saved Games</h3>
+      <div className="item-cards">
+        {wishList.map((data) => (
+          <div key={data.id} className="item-card"> 
+            <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
+            <div className="card_text">{data.name}</div>
           </div>
-          <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
-          <h3>Other Games</h3>
-          <div className="item-cards">
-            {games.slice(4,20).map((data) => (
-              <div key={data.id} className="item-card"> 
-                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-                <div className="card_text">{data.name}</div>
-              </div>
-            ))}
-          </div>
-          <br></br><br></br>
-          <div className="center-pagination">
-            <div className="pagination">
-              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
-              <span>Page {currentPage}</span>
-              <a class="next-page" onClick={nextPage}>&#10095;</a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {currentPage !== 1 && (
-        <div>
-          <h3>Other Games</h3>
-          <div className="item-cards">
-            {games.map((data) => (
-              <div key={data.id} className="item-card"> 
-                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-                <div className="card_text">{data.name}</div>
-              </div>
-            ))}
-          </div>
-          <br></br><br></br>
-          <div className="center-pagination">
-            <div className="pagination">
-              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
-              <span>Page {currentPage}</span>
-              <a class="next-page" onClick={nextPage}>&#10095;</a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <br></br><br></br>
-      <footer className="footer">
-        <p>2023 California State University Final Project CST438.</p>
-      </footer>
+        ))}
+      </div>
         
+      <br></br><br></br>
+      <div className="center-pagination">
+        <div className="pagination">
+          <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+          <span>Page {currentPage}</span>
+          <a class="next-page" onClick={nextPage}>&#10095;</a>
+        </div>
+      </div>
+      
       {/* Render modal */}
       <Modal
         isOpen={selectedGame !== null}
@@ -207,4 +159,4 @@ function MainPage() {
     </div>
   );
 }
-export default MainPage;
+export default WishList;

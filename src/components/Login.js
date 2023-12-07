@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import MainPage from './MainPage';
 import './Login.css';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
     const[isAuthenticated, setAuth] = useState(false);
+    const[userData, setUserData] = useState({id: -1, firstName: '', lastName: '', email: '', password: '', role: ''});
+
+    // Only changes games once upon loading.
+    useEffect(() => {
+    }, [userData])
+
 
     const onChange = (event) => {
         setUser({...user, [event.target.name] : event.target.value});
@@ -18,10 +25,22 @@ function Login() {
         .then(res => { 
             const jwtToken = res.headers.get('Authorization');
             if (jwtToken !== null) {
+                console.log(jwtToken);
                 sessionStorage.setItem("jwt", jwtToken);
                 setAuth(true);
             }
+            return res.json();
         })
+        .then((data) => {
+            console.log(data);
+            setUserData({...userData,  id: data.id});
+            setUserData({...userData,  firstName: data.firstName});
+            setUserData({...userData,  lastName: data.lastName});
+            setUserData({...userData,  email: data.email});
+            setUserData({...userData,  role: data.role});
+            console.log(userData);
+            sessionStorage.setItem("userInfo", userData);
+         })
         .catch(err => console.log(err));
     }
 
@@ -39,7 +58,7 @@ function Login() {
     };
 
     if (isAuthenticated) {
-        window.location.href=('http://localhost:' + window.location.port + '/mainpage');
+        return <MainPage/>
     } else {
         return (
             <div id="login_body">
