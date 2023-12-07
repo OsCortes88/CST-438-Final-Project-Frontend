@@ -3,11 +3,13 @@
 body{
   background: -webkit-linear-gradient(bottom, #212126, #494952);
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 label{
   font-family: 'Raleway', sans-serif;
   font-size: 11pt;
+  color:black;
 }
 
 #card{
@@ -29,6 +31,7 @@ label{
   padding-bottom: 23px;
   padding-top: 13px;
   text-align: center;
+  color:black;
 }
 
 #submit_btn {
