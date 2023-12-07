@@ -5,19 +5,19 @@ import Modal from 'react-modal';
 
 const GameModal=({game, onClose}) =>{
 
-  const addGameToWishList = async () => {
+  const deleteGameFromWishList = async () => {
     try {
       console.log(game);
-      const response = await fetch(`http://localhost:8080/add-game/${game.id}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:8080/delete-game/${game.gameId}`, {
+        method: 'DELETE',
         headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
-        body: JSON.stringify(game)
       });
       if(!response.ok) {
         throw new Error(`Failed to fetch data: ${response.status}`);
       }
       const res = await response.json();
       console.log(res);
+      window.location.reload(true);
     } catch(error) {
       console.error(error);
     }
@@ -33,7 +33,7 @@ const GameModal=({game, onClose}) =>{
         <p>Rating: {game.rating}</p>
         <p>Avg Playtime: {game.playtime} hours</p>
         <p>Age Rating: {game.esrb_rating}</p>
-        <input id='submit_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+        <input id='submit_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
       </div>
     </div>
   );
@@ -46,8 +46,8 @@ const token = sessionStorage.getItem("jwt");
 // const pageNumber = urlParams.get('page');
 // console.log(pageNumber);
 
-function MainPage() {
-  const [games, setGames] = useState([]);
+function WishList() {
+  const [wishList, setWishList] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,7 +63,7 @@ function MainPage() {
   const getGames = async (page) => {
     try {
       // Get 20 games (first page)
-      const response = await fetch(`http://localhost:8080/videogames/20/${page}`, {
+      const response = await fetch(`http://localhost:8080/wishlist`, {
         method: 'GET',
         headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
       });
@@ -72,7 +72,7 @@ function MainPage() {
       }
       const res = await response.json();
       console.log(res);
-      setGames(res);
+      setWishList(res);
     } catch(error) {
       console.error(error);
     }
@@ -132,27 +132,9 @@ function MainPage() {
         </nav>
       </div>
       <br></br><br></br><hr></hr><br></br><br></br>
-      {currentPage === 1 && (
-        <div>
-          <h2 style={{ textAlign: 'center' }}>Featured Games</h2>
-          <div class="slideshow-container">
-            {games.slice(0,5).map((data, index) => {
-              return(
-                <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
-                <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
-                <div class="text">{data.name}</div>
-              </div>
-              )
-            })}
-            <a class="prev" onClick={prevSlide}>&#10094;</a>
-            <a class="next" onClick={nextSlide}>&#10095;</a>
-          </div>
-          <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
-        </div>
-      )}
       <h3 style={{ textAlign: 'center' }}>Other Games</h3>
       <div className="item-cards">
-        {games.slice(4,20).map((data) => (
+        {wishList.slice(0,5).map((data) => (
           <div key={data.id} className="item-card"> 
             <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
             <div className="card_text">{data.name}</div>
@@ -179,4 +161,4 @@ function MainPage() {
     </div>
   );
 }
-export default MainPage;
+export default WishList;
