@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
 label{
     font-family: 'Raleway', sans-serif;
     font-size: 11pt;
@@ -7,7 +8,7 @@ label{
   #card{
     background: #fbfbfb;
     border-radius: 8px;
-    box-shadow: 1px 2px 8px rgba(0,0,0,0.65);
+    box-shadow: 1px 2px 8px rgba(23,26,33,0.65);
     height: 510px;
     margin:6rem auto 8.1rem auto;
     width: 329px;
@@ -26,7 +27,7 @@ label{
   }
   
   #submit_btn {
-    background: -webkit-linear-gradient(right, #494952, #212126);
+    background: #1b2838;
     border: none;
     border-radius: 21px;
     box-shadow: 0px 1px 8px #212126;
@@ -51,20 +52,19 @@ label{
   }
   
   .form_border {
-    background: -webkit-linear-gradient(right, #494952, #212126);
+    background: -webkit-linear-gradient(right, #2a475e, #1b2838);
     height: 1px;
     width: 100%;
   }
   
   .form_content {
-    background: #fbfbfb;
     border: none;
     outline: none;
     padding-top: 14px;
   }
   
   .underline_title {
-    background: -webkit-linear-gradient(right, #494952, #212126);
+    background: -webkit-linear-gradient(right, #2a475e, #1b2838);
     height: 2px;
     margin: -1.1rem auto 0 auto;
     width: 89px;
@@ -77,4 +77,3 @@ h2{
 #email, #firstName, #lastName, #password{
     padding-top: 13px;
 }
-

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import MainPage from './MainPage';
 import './Login.css';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 function Login() {
@@ -28,11 +27,15 @@ function Login() {
 
     const linkStyle ={
         textAlign: 'center',
-        color: "#212126",
-        fontFamily: 'Raleway',
+        color: "black",
         fontSize: "10pt",
         marginTop: "16px",
-        textDecoration: "none"
+        textDecoration: "none",
+        transition: 'color 0.3s ease',
+
+    ':hover': {
+        color: 'red',
+    },
     };
 
     if (isAuthenticated) {
