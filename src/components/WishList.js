@@ -29,11 +29,7 @@ const GameModal=({game, onClose}) =>{
         <span className="close" onClick={onClose}>&times;</span>
         <h2>{game.name}</h2>
         <img src={game.background_image} alt={game.name} />
-        <p>Release Date: {game.released}</p>
-        <p>Rating: {game.rating}</p>
-        <p>Avg Playtime: {game.playtime} hours</p>
-        <p>Age Rating: {game.esrb_rating}</p>
-        <input id='submit_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
+        <input class='add_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
       </div>
     </div>
   );
@@ -120,7 +116,7 @@ function WishList() {
             <i></i>
           </label>
           <div class="logo">
-            PlaceHolder
+            <img src="./logo.png" alt="logo"></img>
           </div>
           <div class="nav-wrapper">
             <ul>
@@ -132,9 +128,9 @@ function WishList() {
         </nav>
       </div>
       <br></br><br></br><hr></hr><br></br><br></br>
-      <h3 style={{ textAlign: 'center' }}>Other Games</h3>
+      <h3 style={{ textAlign: 'center' }}>Saved Games</h3>
       <div className="item-cards">
-        {wishList.slice(0,5).map((data) => (
+        {wishList.map((data) => (
           <div key={data.id} className="item-card"> 
             <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
             <div className="card_text">{data.name}</div>
@@ -143,10 +139,12 @@ function WishList() {
       </div>
         
       <br></br><br></br>
-      <div className="pagination">
-        <button onClick={prevPage} disabled={currentPage === 1}>Previous Page</button>
-        <span>Page {currentPage}</span>
-        <button onClick={nextPage}>Next Page</button>
+      <div className="center-pagination">
+        <div className="pagination">
+          <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+          <span>Page {currentPage}</span>
+          <a class="next-page" onClick={nextPage}>&#10095;</a>
+        </div>
       </div>
       
       {/* Render modal */}

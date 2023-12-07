@@ -33,7 +33,7 @@ const GameModal=({game, onClose}) =>{
         <p>Rating: {game.rating}</p>
         <p>Avg Playtime: {game.playtime} hours</p>
         <p>Age Rating: {game.esrb_rating}</p>
-        <input id='submit_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+        <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
       </div>
     </div>
   );
