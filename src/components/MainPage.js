@@ -68,10 +68,12 @@ function MainPage() {
 
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const prevPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const openModal = (game) =>{
@@ -83,7 +85,7 @@ function MainPage() {
   }
 
   const logout = () => {
-    sessionStorage.removeItem(token);
+    sessionStorage.removeItem('jwt');
     history.push('/');
   }
 
@@ -104,27 +106,30 @@ function MainPage() {
             <ul>
               <li><a href="/mainpage">Home</a></li>
               <li><a>WishList</a></li>
-              <li><a>About</a></li>
-              <li><a onclick={logout}>LogOut</a></li>
+              <li><a href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
       </div>
       <br></br><br></br><hr></hr><br></br><br></br>
-      <h2 style={{ textAlign: 'center' }}>Featured Games</h2>
-      <div class="slideshow-container">
-        {games.slice(0,5).map((data, index) => {
-          return(
-            <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
-            <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
-            <div class="text">{data.name}</div>
+      {currentPage === 1 && (
+        <div>
+          <h2 style={{ textAlign: 'center' }}>Featured Games</h2>
+          <div class="slideshow-container">
+            {games.slice(0,5).map((data, index) => {
+              return(
+                <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
+                <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
+                <div class="text">{data.name}</div>
+              </div>
+              )
+            })}
+            <a class="prev" onClick={prevSlide}>&#10094;</a>
+            <a class="next" onClick={nextSlide}>&#10095;</a>
           </div>
-          )
-        })}
-        <a class="prev" onClick={prevSlide}>&#10094;</a>
-        <a class="next" onClick={nextSlide}>&#10095;</a>
-      </div>
-      <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
+          <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
+        </div>
+      )}
       <h3 style={{ textAlign: 'center' }}>Other Games</h3>
       <div className="item-cards">
         {games.slice(4,20).map((data) => (
