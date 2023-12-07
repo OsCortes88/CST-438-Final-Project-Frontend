@@ -14,7 +14,7 @@ function App() {
           {/* defining all routes, by default App returns login path */}
           <Route exact path="/" component={Login}/>
           <Route path="/mainpage" component={MainPage}/>
-          <Route pathe="/wishlist" component={WishList}/>
+          <Route path="/wishlist" component={WishList}/>
           <Route path="/signup" component={SignUp}/>
         </Switch>
       </BrowserRouter>
