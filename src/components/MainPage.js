@@ -2,49 +2,9 @@ import './MainPage.css';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
-
-const GameModal=({game, onClose}) =>{
-
-  const addGameToWishList = async () => {
-    try {
-      console.log(game);
-      const response = await fetch(`http://localhost:8080/add-game/${game.id}`, {
-        method: 'PUT',
-        headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
-        body: JSON.stringify(game)
-      });
-      if(!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`);
-      }
-      const res = await response.json();
-      console.log(res);
-    } catch(error) {
-      console.error(error);
-    }
-  }
-
-  return(
-    <div className="modal">
-      <div className="modal-content">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>{game.name}</h2>
-        <img src={game.background_image} alt={game.name} />
-        <p>Release Date: {game.released}</p>
-        <p>Rating: {game.rating}</p>
-        <p>Avg Playtime: {game.playtime} hours</p>
-        <p>Age Rating: {game.esrb_rating}</p>
-        <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
-      </div>
-    </div>
-  );
-};
+import ReactPlayer from 'react-player'
 
 const token = sessionStorage.getItem("jwt");
-
-// Grabbing URL parameters
-// const urlParams = new URLSearchParams(window.location.search);
-// const pageNumber = urlParams.get('page');
-// console.log(pageNumber);
 
 function MainPage() {
   const [games, setGames] = useState([]);
@@ -58,8 +18,70 @@ function MainPage() {
   // Only changes games once upon loading.
   useEffect(() => {
     getGames(currentPage);
-  }, [currentPage])
+  }, [currentPage, selectedGame])
 
+  const GameModal=({game, onClose}) =>{
+    const ShowHTML = (htmlText) =>{
+          const html = {__html:htmlText};
+          return <div dangerouslySetInnerHTML={html} />
+      }
+
+    const renderVideo = (trailers) => {
+      if(trailers.length > 0) {
+        console.log(trailers[0].data);
+        return (
+          <div>
+            <p>Trailer: </p>
+            <ReactPlayer url={trailers[0].data} controls={true} light={trailers[0].preview}/>
+          </div>
+        );
+      }
+    }
+
+    const addGameToWishList = async () => {
+      try {
+        console.log(game);
+        const response = await fetch(`http://localhost:8080/add-game/${game.id}`, {
+          method: 'PUT',
+          headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
+          body: JSON.stringify(game)
+        });
+        if(!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status}`);
+        }
+        const res = await response.json();
+        console.log(res);
+      } catch(error) {
+        console.error(error);
+      }
+    }
+  
+    return(
+      <div className="modal">
+        <div className="modal-content">
+          <span className="close" onClick={onClose}>&times;</span>
+          <h2>{selectedGame.name}</h2>
+          <img src={selectedGame.background_image} alt={game.name} />
+          <p>Release Date: {selectedGame.released}</p>
+          <p>Rating: {selectedGame.rating}</p>
+          <p>Avg Playtime: {selectedGame.playtime} hours</p>
+          <p>Age Rating: {selectedGame.esrb_rating}</p>
+          <p>Purchase Sites:
+            <ul>
+            {selectedGame.purchaseSites.map((data) => (
+                <li><a href={data.site}>{data.vendor}</a></li>
+            ))} 
+            </ul>
+          </p>
+          <p>Description: {ShowHTML(selectedGame.description)}</p>
+          {renderVideo(selectedGame.trailers)}
+          <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+        </div>
+      </div>
+    );
+  };
+
+  
   const getGames = async (page) => {
     try {
       // Get 20 games (first page)
@@ -73,6 +95,24 @@ function MainPage() {
       const res = await response.json();
       console.log(res);
       setGames(res);
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const getGameInfo = async (gameId) => {
+    try {
+      // Get 20 games (first page)
+      const response = await fetch(`http://localhost:8080/videogame-info/${gameId}`, {
+        method: 'GET',
+        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+      });
+      if(!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+      const res = await response.json();
+      console.log(res);
+      setSelectedGame(res);
     } catch(error) {
       console.error(error);
     }
@@ -97,7 +137,7 @@ function MainPage() {
   }
 
   const openModal = (game) =>{
-    setSelectedGame(game);
+    getGameInfo(game.id);
   }
 
   const closeModal = () =>{
