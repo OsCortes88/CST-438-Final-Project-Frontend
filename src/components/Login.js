@@ -16,32 +16,36 @@ function Login() {
         setUser({...user, [event.target.name] : event.target.value});
     }
 
-    const login = () => {
-        fetch('http://localhost:8080/login', {
-            method:'POST',
-            headers: {'Content-Type':'application/json' },
-            body: JSON.stringify(user)
-        })
-        .then(res => { 
-            const jwtToken = res.headers.get('Authorization');
+    // Changed login to async and added redirct to mainPage here.
+    const login = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/login', {
+                method:'POST',
+                headers: {'Content-Type':'application/json' },
+                body: JSON.stringify(user)
+            });
+            const jwtToken = response.headers.get('Authorization');
             if (jwtToken !== null) {
                 console.log(jwtToken);
-                sessionStorage.setItem("jwt", jwtToken);
+                sessionStorage.setItem('jwt', jwtToken);
                 setAuth(true);
+                history.push('/mainpage');
             }
-            return res.json();
-        })
-        .then((data) => {
+            const data = await response.json();
             console.log(data);
-            setUserData({...userData,  id: data.id});
-            setUserData({...userData,  firstName: data.firstName});
-            setUserData({...userData,  lastName: data.lastName});
-            setUserData({...userData,  email: data.email});
-            setUserData({...userData,  role: data.role});
+            setUserData({
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                role: data.role,
+            });
             console.log(userData);
-            sessionStorage.setItem("userInfo", userData);
-         })
-        .catch(err => console.log(err));
+            sessionStorage.setItem('userInfo', JSON.stringify(userData));
+        }
+        catch(err) {
+            console.error(err);
+        }
     }
 
     const linkStyle ={
@@ -51,55 +55,50 @@ function Login() {
         marginTop: "16px",
         textDecoration: "none",
         transition: 'color 0.3s ease',
-
-    ':hover': {
-        color: 'red',
-    },
+        ':hover': {
+            color: 'red',
+        },
     };
 
     // Switched to using history (refresh doesn't log user out)
-    if (isAuthenticated) {
-        history.push('/mainpage');
-    } else {
-        return (
-            <div id="login_body">
-                <div id='card'>
-                    <div id='card_content'>
-                        <div id='card_title'>
-                            <h2>LogIn</h2>
-                            <div className="underline_title"></div>
-                        </div>
-                        <form className="form" onSubmit={(e) => { e.preventDefault(); login();}}>
-                            <label id='username' htmlFor='username'>
-                                Email
-                            </label>
-                            <input
-                                type="text"
-                                className="form_content"
-                                name='username'
-                                value={user.username} 
-                                onChange={onChange}
-                            />
-                            <div className='form_border'></div>
-                            <label id='password' htmlFor='password'>
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                className="form_content"
-                                name='password'
-                                value={user.password} 
-                                onChange={onChange}
-                            />
-                            <div className='form_border'></div>
-                            <input id='submit_btn' type='submit' name='submit' value='Login'></input>
-                            <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-                            <Link to="/signup" style={linkStyle}>Don't have account yet?</Link>
-                        </form>
+    return (
+        <div id="login_body">
+            <div id='card'>
+                <div id='card_content'>
+                    <div id='card_title'>
+                        <h2>LogIn</h2>
+                        <div className="underline_title"></div>
                     </div>
+                    <form className="form" onSubmit={(e) => { e.preventDefault(); login();}}>
+                        <label id='username' htmlFor='username'>
+                            Email
+                        </label>
+                        <input
+                            type="text"
+                            className="form_content"
+                            name='username'
+                            value={user.username} 
+                            onChange={onChange}
+                        />
+                        <div className='form_border'></div>
+                        <label id='password' htmlFor='password'>
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            className="form_content"
+                            name='password'
+                            value={user.password} 
+                            onChange={onChange}
+                        />
+                        <div className='form_border'></div>
+                        <input id='submit_btn' type='submit' name='submit' value='Login'></input>
+                        <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+                        <Link to="/signup" style={linkStyle}>Don't have account yet?</Link>
+                    </form>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 export default Login;
