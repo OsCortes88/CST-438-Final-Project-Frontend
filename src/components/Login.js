@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import MainPage from './MainPage';
 import './Login.css';
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link, useHistory } from 'react-router-dom';
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
     const[isAuthenticated, setAuth] = useState(false);
     const[userData, setUserData] = useState({id: -1, firstName: '', lastName: '', email: '', password: '', role: ''});
+    const history = useHistory();
 
     // Only changes games once upon loading.
     useEffect(() => {
@@ -57,8 +57,9 @@ function Login() {
     },
     };
 
+    // Switched to using history (refresh doesn't log user out)
     if (isAuthenticated) {
-        return <MainPage/>
+        history.push('/mainpage');
     } else {
         return (
             <div id="login_body">

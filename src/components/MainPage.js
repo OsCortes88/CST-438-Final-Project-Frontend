@@ -1,6 +1,7 @@
 import './MainPage.css';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { SelectButton } from 'primereact/selectbutton';
 import Modal from 'react-modal';
 
 const GameModal=({game, onClose}) =>{
@@ -39,42 +40,82 @@ const GameModal=({game, onClose}) =>{
   );
 };
 
-const token = sessionStorage.getItem("jwt");
+// Genres for Select Buttons
+const allGenres = [
+  { name: 'Action', value: 'action' },
+  { name: 'Indie', value: 'indie' },
+  { name: 'Adventure', value: 'adventure' },
+  { name: 'RPG', value: 'role-playing-games-rpg'},
+  { name: 'Strategy', value: 'strategy' },
+  { name: 'Shooter', value: 'shooter' },
+  { name: 'Casual', value: 'casual' },
+  { name: 'Simulation', value: 'simulation' },
+  { name: 'Puzzle', value: 'puzzle' },
+  { name: 'Arcade', value: 'arcade' },
+  { name: 'Platformer', value: 'platformer' },
+  { name: 'Multiplayer', value: 'massively-multiplayer' },
+  { name: 'Racing', value: 'racing' },
+  { name: 'Sports', value: 'sports' },
+  { name: 'Fighting', value: 'fighting' },
+  { name: 'Family', value: 'family' },
+  { name: 'Board-Games', value: 'board-games' },
+  { name: 'Educational', value: 'educational' },
+  { name: 'Card', value: 'card' }
+];
 
-// Grabbing URL parameters
-// const urlParams = new URLSearchParams(window.location.search);
-// const pageNumber = urlParams.get('page');
-// console.log(pageNumber);
+const token = sessionStorage.getItem("jwt");
 
 function MainPage() {
   const [games, setGames] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [genresSelected, setGenresSelected] = useState(null);
+  const [isFiltered, setFiltered] = useState(false);
 
   const token = sessionStorage.getItem("jwt");
   const history = useHistory();
 
   // Only changes games once upon loading.
   useEffect(() => {
-    getGames(currentPage);
-  }, [currentPage])
+    getGames(currentPage, isFiltered);
+  }, [currentPage, isFiltered])
 
-  const getGames = async (page) => {
-    try {
-      // Get 20 games (first page)
-      const response = await fetch(`http://localhost:8080/videogames/20/${page}`, {
-        method: 'GET',
-        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
-      });
-      if(!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`);
+  // The games displayed on Main depend on page and wether filtered is on/off
+  const getGames = async (page, isFiltered) => {
+    console.log(isFiltered);
+    if(isFiltered) {
+      try {
+        const filteredResponse = await fetch(`http://localhost:8080/videogames/20/${page}/${genresSelected}`, {
+          method: 'GET',
+          headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+        });
+        if(!filteredResponse.ok) {
+          throw new Error(`Failed to fetch data: ${filteredResponse.status}`);
+        }
+        const res = await filteredResponse.json();
+        console.log(res);
+        setGames(res);
       }
-      const res = await response.json();
-      console.log(res);
-      setGames(res);
-    } catch(error) {
-      console.error(error);
+      catch(error) {
+        console.error(error);
+      }
+    }
+    else {
+      try {
+        const normalResponse = await fetch(`http://localhost:8080/videogames/20/${page}`, {
+            method: 'GET',
+            headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+          });
+        if(!normalResponse.ok) {
+          throw new Error(`Failed to fetch data: ${normalResponse.status}`);
+        }
+        const res = await normalResponse.json();
+        console.log(res);
+        setGames(res);
+      } catch(error) {
+        console.error(error);
+      }
     }
   }
 
@@ -147,6 +188,18 @@ function MainPage() {
             <a class="prev" onClick={prevSlide}>&#10094;</a>
             <a class="next" onClick={nextSlide}>&#10095;</a>
           </div>
+
+          <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
+          <form className="form" onSubmit={(e) => { e.preventDefault(); setFiltered(true);}}>
+            <h3>Filter By Genre</h3>
+            <div className="card flex justify-content-center">
+              <SelectButton value={genresSelected} onChange={(e) => setGenresSelected(e.value)} optionLabel="name" options={allGenres} multiple />
+            </div>
+            <br></br>
+            <input id='submit_btn' type='submit' name='submit' value='Filter'></input>
+            {/* TODO: Add a remove filters button to reset back to default? */}
+          </form>
+
           <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
           <h3>Other Games</h3>
           <div className="item-cards">

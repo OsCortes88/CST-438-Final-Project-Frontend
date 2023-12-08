@@ -1,6 +1,6 @@
 import './MainPage.css';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 
 const GameModal=({game, onClose}) =>{
