@@ -17,6 +17,7 @@ function MainPage() {
 
   // Only changes games once upon loading.
   useEffect(() => {
+    document.title = "Gamestore - Main Page";
     getGames(currentPage);
   }, [currentPage, selectedGame])
 
