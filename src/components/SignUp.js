@@ -31,8 +31,9 @@ function SignUp () {
         if(res) {
             // redirect user to login
             history.push('/');
+        } else {
+            alert('Username already exists. Please choose a different username.')
         }
-        // TODO: else, display "user already exists" message
       } catch (error) {
         console.error(error);
       }
