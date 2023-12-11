@@ -70,23 +70,22 @@ function MainPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [genresSelected, setGenresSelected] = useState(null);
-  const [isFiltered, setFiltered] = useState(false);
+  const [genresSelected, setGenresSelected] = useState([]);
 
   const token = sessionStorage.getItem("jwt");
   const history = useHistory();
 
   // Only changes games once upon loading.
   useEffect(() => {
-    getGames(currentPage, isFiltered);
-  }, [currentPage, isFiltered])
+    getGames(currentPage);
+  }, [currentPage])
 
   // The games displayed on Main depend on page and wether filtered is on/off
-  const getGames = async (page, isFiltered) => {
-    console.log(isFiltered);
-    if(isFiltered) {
+  const getGames = async (page) => {
+    if(genresSelected.length != 0) {
+      console.log(genresSelected);
       try {
-        const filteredResponse = await fetch(`http://localhost:8080/videogames/20/${page}/${genresSelected}`, {
+        const filteredResponse = await fetch(`http://localhost:8080/videogames-by-genre/20/${page}/${genresSelected}`, {
           method: 'GET',
           headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
         });
@@ -167,7 +166,7 @@ function MainPage() {
             <ul>
               <li><a class="nav-link" href="/mainpage">Home</a></li>
               <li><a class="nav-link" href="/wishlist">WishList</a></li>
-              <li><a class="nav-link" href="/" onclick={logout}>LogOut</a></li>
+              <li><a class="nav-link" href="/" onClick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
@@ -190,7 +189,7 @@ function MainPage() {
           </div>
 
           <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
-          <form className="form" onSubmit={(e) => { e.preventDefault(); setFiltered(true);}}>
+          <form className="form" onSubmit={(e) => { e.preventDefault(); getGames(1);}}>
             <h3>Filter By Genre</h3>
             <div className="card flex justify-content-center">
               <SelectButton value={genresSelected} onChange={(e) => setGenresSelected(e.value)} optionLabel="name" options={allGenres} multiple />
