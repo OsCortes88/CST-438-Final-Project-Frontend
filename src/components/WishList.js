@@ -2,49 +2,12 @@ import './MainPage.css';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
-
-const GameModal=({game, onClose}) =>{
-
-  const deleteGameFromWishList = async () => {
-    try {
-      console.log(game);
-      const response = await fetch(`http://localhost:8080/delete-game/${game.gameId}`, {
-        method: 'DELETE',
-        headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
-      });
-      if(!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`);
-      }
-      const res = await response.json();
-      console.log(res);
-      window.location.reload(true);
-    } catch(error) {
-      console.error(error);
-    }
-  }
-
-  return(
-    <div className="modal">
-      <div className="modal-content">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>{game.name}</h2>
-        <img src={game.background_image} alt={game.name} />
-        <input class='add_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
-      </div>
-    </div>
-  );
-};
+import ReactPlayer from 'react-player'
 
 const token = sessionStorage.getItem("jwt");
 
-// Grabbing URL parameters
-// const urlParams = new URLSearchParams(window.location.search);
-// const pageNumber = urlParams.get('page');
-// console.log(pageNumber);
-
 function WishList() {
   const [wishList, setWishList] = useState([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -53,10 +16,90 @@ function WishList() {
 
   // Only changes games once upon loading.
   useEffect(() => {
-    getGames(currentPage);
-  }, [currentPage])
+    getWishList(currentPage);
+  }, [currentPage, selectedGame])
 
-  const getGames = async (page) => {
+  const GameModal=({game, onClose}) =>{
+
+    const ShowHTML = (htmlText) =>{
+        const html = {__html:htmlText};
+        return <div dangerouslySetInnerHTML={html} />
+    }
+  
+    const renderVideo = (trailers) => {
+      if(trailers.length > 0) {
+        console.log(trailers[0].data);
+        return (
+          <div>
+            <p>Trailer: </p>
+            <ReactPlayer url={trailers[0].data} controls={true} light={trailers[0].preview}/>
+          </div>
+        );
+      }
+    }
+  
+    const deleteGameFromWishList = async () => {
+      try {
+        console.log(game);
+        const response = await fetch(`http://localhost:8080/delete-game/${game.id}`, {
+          method: 'DELETE',
+          headers: {'Authorization' : token, 'Content-Type' : 'application/json'},
+        });
+        if(!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status}`);
+        }
+        const res = await response.json();
+        console.log(res);
+        window.location.reload(true);
+      } catch(error) {
+        console.error(error);
+      }
+    }
+  
+    return(
+      <div className="modal">
+        <div className="modal-content">
+          <span className="close" onClick={onClose}>&times;</span>
+          <h2>{game.name}</h2>
+          <img src={selectedGame.background_image} alt={game.name} />
+            <p>Release Date: {selectedGame.released}</p>
+            <p>Rating: {selectedGame.rating}</p>
+            <p>Avg Playtime: {selectedGame.playtime} hours</p>
+            <p>Age Rating: {selectedGame.esrb_rating}</p>
+            <p>Purchase Sites:
+              <ul>
+              {selectedGame.purchaseSites.map((data) => (
+                  <li><a href={data.site}>{data.vendor}</a></li>
+              ))} 
+              </ul>
+            </p>
+            <p>Description: {ShowHTML(selectedGame.description)}</p>
+            {renderVideo(selectedGame.trailers)}
+            <input class='add_btn' type='submit' name='submit' value='Delete' onClick={deleteGameFromWishList}></input>
+        </div>
+      </div>
+    );
+  };
+
+  const getGameInfo = async (gameId) => {
+    try {
+      // Get 20 games (first page)
+      const response = await fetch(`http://localhost:8080/videogame-info/${gameId}`, {
+        method: 'GET',
+        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+      });
+      if(!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+      const res = await response.json();
+      console.log(res);
+      setSelectedGame(res);
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const getWishList = async (page) => {
     try {
       // Get 20 games (first page)
       const response = await fetch(`http://localhost:8080/wishlist`, {
@@ -74,14 +117,6 @@ function WishList() {
     }
   }
 
-  const nextSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide + 1) % 4);
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide - 1 + 4) % 4);
-  }
-
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -93,7 +128,7 @@ function WishList() {
   }
 
   const openModal = (game) =>{
-    setSelectedGame(game);
+    getGameInfo(game.gameId)
   }
 
   const closeModal = () =>{
