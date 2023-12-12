@@ -27,6 +27,12 @@ nav {
     width: 3%;
 }
 
+.wishlist-logo{
+    padding-top: 5px;
+    float: left;
+    width: 3%;
+}
+
 nav ul {
     float: right;
 }
