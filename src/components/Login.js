@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import MainPage from './MainPage';
+import { useHistory } from 'react-router-dom';
 import './Login.css';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
     const[isAuthenticated, setAuth] = useState(false);
     const[userData, setUserData] = useState({id: -1, firstName: '', lastName: '', email: '', password: '', role: ''});
+    const history = useHistory();
 
     // Only changes games once upon loading.
     useEffect(() => {
+        document.title = "Gamestore - Login";
     }, [userData])
 
 
@@ -27,7 +29,7 @@ function Login() {
             if (jwtToken !== null) {
                 console.log(jwtToken);
                 sessionStorage.setItem("jwt", jwtToken);
-                setAuth(true);
+                history.push('/mainpage');
             }
             return res.json();
         })
@@ -57,48 +59,44 @@ function Login() {
     },
     };
 
-    if (isAuthenticated) {
-        return <MainPage/>
-    } else {
-        return (
-            <div id="login_body">
-                <div id='card'>
-                    <div id='card_content'>
-                        <div id='card_title'>
-                            <h2>LogIn</h2>
-                            <div className="underline_title"></div>
-                        </div>
-                        <form className="form" onSubmit={(e) => { e.preventDefault(); login();}}>
-                            <label id='username' htmlFor='username'>
-                                Email
-                            </label>
-                            <input
-                                type="text"
-                                className="form_content"
-                                name='username'
-                                value={user.username} 
-                                onChange={onChange}
-                            />
-                            <div className='form_border'></div>
-                            <label id='password' htmlFor='password'>
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                className="form_content"
-                                name='password'
-                                value={user.password} 
-                                onChange={onChange}
-                            />
-                            <div className='form_border'></div>
-                            <input id='submit_btn' type='submit' name='submit' value='Login'></input>
-                            <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-                            <Link to="/signup" style={linkStyle}>Don't have account yet?</Link>
-                        </form>
+    return (
+        <div id="login_body">
+            <div id='card'>
+                <div id='card_content'>
+                    <div id='card_title'>
+                        <h2>LogIn</h2>
+                        <div className="underline_title"></div>
                     </div>
+                    <form className="form" onSubmit={(e) => { e.preventDefault(); login();}}>
+                        <label id='username' htmlFor='username'>
+                            Email
+                        </label>
+                        <input
+                            type="text"
+                            className="form_content"
+                            name='username'
+                            value={user.username} 
+                            onChange={onChange}
+                        />
+                        <div className='form_border'></div>
+                        <label id='password' htmlFor='password'>
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            className="form_content"
+                            name='password'
+                            value={user.password} 
+                            onChange={onChange}
+                        />
+                        <div className='form_border'></div>
+                        <input id='submit_btn' type='submit' name='submit' value='Login'></input>
+                        <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+                        <Link to="/signup" style={linkStyle} id="signup_link">Don't have account yet?</Link>
+                    </form>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 export default Login;
