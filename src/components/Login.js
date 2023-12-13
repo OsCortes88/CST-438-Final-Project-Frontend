@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import { useHistory } from 'react-router-dom';
 import './Login.css';
 import { Link, useHistory } from 'react-router-dom';
 function Login() {

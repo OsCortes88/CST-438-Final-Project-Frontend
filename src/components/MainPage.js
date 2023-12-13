@@ -312,7 +312,7 @@ function MainPage() {
 
         <br></br><br></br>
 
-      </div>
+      {/* </div> */}
       {/* Render modal */}
       <Modal
         isOpen={selectedGame !== null}
