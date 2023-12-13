@@ -4,8 +4,6 @@ import { NavLink, useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ReactPlayer from 'react-player'
 
-const token = sessionStorage.getItem("jwt");
-
 function MainPage() {
   const [games, setGames] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -76,7 +74,7 @@ function MainPage() {
           </p>
           <p>Description: {ShowHTML(selectedGame.description)}</p>
           {renderVideo(selectedGame.trailers)}
-          <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+          <input id={selectedGame.id} class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
         </div>
       </div>
     );
@@ -166,7 +164,7 @@ function MainPage() {
           <div class="nav-wrapper">
             <ul>
               <li><a class="nav-link" href="/mainpage">Home</a></li>
-              <li><a class="nav-link" href="/wishlist">WishList</a></li>
+              <li><a id="wishlistLink" class="nav-link" href="/wishlist">WishList</a></li>
               <li><a class="nav-link" href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
@@ -178,9 +176,10 @@ function MainPage() {
           <h2>Featured Games</h2>
           <div class="slideshow-container">
             {games.slice(0,5).map((data, index) => {
+              const uniqueId = `img${data.id}`;
               return(
                 <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
-                <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
+                <img id={uniqueId} src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
                 <div class="text">{data.name}</div>
               </div>
               )

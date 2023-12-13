@@ -168,7 +168,7 @@ function WishList() {
         {wishList.map((data) => (
           <div key={data.id} className="item-card"> 
             <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-            <div className="card_text">{data.name}</div>
+            <div id={data.name} className="card_text">{data.name}</div>
           </div>
         ))}
       </div>
