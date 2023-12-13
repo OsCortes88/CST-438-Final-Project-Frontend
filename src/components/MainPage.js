@@ -165,7 +165,7 @@ function MainPage() {
             <ul>
               <li><a class="nav-link" href="/mainpage">Home</a></li>
               <li><a id="wishlistLink" class="nav-link" href="/wishlist">WishList</a></li>
-              <li><a class="nav-link" href="/" onclick={logout}>LogOut</a></li>
+              <li><a id="logoutLink" class="nav-link" href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
