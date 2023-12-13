@@ -9,6 +9,7 @@ function Login() {
 
     // Only changes games once upon loading.
     useEffect(() => {
+        document.title = "Gamestore - Login";
     }, [userData])
 
 
@@ -60,7 +61,6 @@ function Login() {
         },
     };
 
-    // Switched to using history (refresh doesn't log user out)
     return (
         <div id="login_body">
             <div id='card'>
@@ -94,7 +94,7 @@ function Login() {
                         <div className='form_border'></div>
                         <input id='submit_btn' type='submit' name='submit' value='Login'></input>
                         <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
-                        <Link to="/signup" style={linkStyle}>Don't have account yet?</Link>
+                        <Link to="/signup" style={linkStyle} id="signup_link">Don't have account yet?</Link>
                     </form>
                 </div>
             </div>

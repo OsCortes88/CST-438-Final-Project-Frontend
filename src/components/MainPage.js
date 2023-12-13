@@ -69,6 +69,7 @@ function MainPage() {
 
   // Only changes games once upon loading.
   useEffect(() => {
+    document.title = "Gamestore - Main Page";
     getGames(currentPage);
   }, [currentPage, selectedGame])
 
@@ -127,7 +128,7 @@ function MainPage() {
           </p>
           <p>Description: {ShowHTML(selectedGame.description)}</p>
           {renderVideo(selectedGame.trailers)}
-          <input class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
+          <input id={selectedGame.id} class='add_btn' type='submit' name='submit' value='Add' onClick={addGameToWishList}></input>
         </div>
       </div>
     );
@@ -243,37 +244,38 @@ function MainPage() {
           <div class="nav-wrapper">
             <ul>
               <li><a class="nav-link" href="/mainpage">Home</a></li>
-              <li><a class="nav-link" href="/wishlist">WishList</a></li>
-              <li><a class="nav-link" href="/" onClick={logout}>LogOut</a></li>
+              <li><a id="wishlistLink" class="nav-link" href="/wishlist">WishList</a></li>
+              <li><a id="logoutLink" class="nav-link" href="/" onclick={logout}>LogOut</a></li>
             </ul>
           </div>
         </nav>
-      
-        <br></br><br></br><hr></hr><br></br><br></br>
-        {currentPage === 1 && (
-          <div>
-            <h2>Featured Games</h2>
-            <div class="slideshow-container">
-              {games.slice(0,5).map((data, index) => {
-                return(
-                  <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
-                  <img src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
-                  <div class="text">{data.name}</div>
-                </div>
-                )
-              })}
-              <a class="prev" onClick={prevSlide}>&#10094;</a>
-              <a class="next" onClick={nextSlide}>&#10095;</a>
-            </div>
-            <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
-            <h3>Other Games</h3>
-            <div className="item-cards">
-              {games.slice(4,20).map((data) => (
-                <div key={data.id} className="item-card"> 
-                  <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-                  <div className="card_text">{data.name}</div>
-                </div>
-              ))}
+      </div>
+      <br></br><br></br><hr></hr><br></br><br></br>
+      {currentPage === 1 && (
+        <div>
+          <h2>Featured Games</h2>
+          <div class="slideshow-container">
+            {games.slice(0,5).map((data, index) => {
+              const uniqueId = `img${data.id}`;
+              return(
+                <div key={data.id} className={`slides ${index === currentSlide ? 'active' : '' } fade` } >
+                <img id={uniqueId} src={data.background_image} alt={`Game ${index + 1}` } onClick={() => openModal(data)}/>
+                <div class="text">{data.name}</div>
+              </div>
+              )
+            })}
+            <a class="prev" onClick={prevSlide}>&#10094;</a>
+            <a class="next" onClick={nextSlide}>&#10095;</a>
+          </div>
+          <br></br><br></br><hr className="styled-hr"></hr><br></br><br></br>
+          <h3>Other Games</h3>
+          <div className="item-cards">
+            {games.slice(4,20).map((data) => (
+              <div key={data.id} className="item-card"> 
+                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
+                <div className="card_text">{data.name}</div>
+              </div>
+            ))}
             </div>
             <br></br><br></br>
             <div className="center-pagination">
@@ -310,7 +312,7 @@ function MainPage() {
 
         <br></br><br></br>
 
-      </div>
+      {/* </div> */}
       {/* Render modal */}
       <Modal
         isOpen={selectedGame !== null}

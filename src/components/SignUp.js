@@ -1,5 +1,5 @@
 import './SignUp.css';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router-dom';
 import {Link} from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -46,6 +46,10 @@ function SignUp () {
         marginTop: "16px",
         textDecoration: "none"
     };
+
+    useEffect(() => {
+        document.title = "Gamestore - Sign Up";
+    },)
 
     return(
         <div id="login_body">
