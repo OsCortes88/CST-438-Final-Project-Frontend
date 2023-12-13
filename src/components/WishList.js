@@ -1,6 +1,6 @@
 import './MainPage.css';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ReactPlayer from 'react-player'
 
@@ -142,7 +142,7 @@ function WishList() {
 
   return (
     <div>
-      <div class="container">
+      <div class="nav-container">
         <nav>
           <input type="checkbox" id="nav" class="hidden"></input>
           <label for="nav" class="nav-btn">
@@ -150,7 +150,7 @@ function WishList() {
             <i></i>
             <i></i>
           </label>
-          <div class="logo">
+          <div className='wishlist-logo'>
             <img src="./logo.png" alt="logo"></img>
           </div>
           <div class="nav-wrapper">

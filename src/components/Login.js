@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router-dom';
 import './Login.css';
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link, useHistory } from 'react-router-dom';
 function Login() {
     const[user, setUser] = useState({username:'', password:''});
     const[isAuthenticated, setAuth] = useState(false);
@@ -18,32 +18,36 @@ function Login() {
         setUser({...user, [event.target.name] : event.target.value});
     }
 
-    const login = () => {
-        fetch('http://localhost:8080/login', {
-            method:'POST',
-            headers: {'Content-Type':'application/json' },
-            body: JSON.stringify(user)
-        })
-        .then(res => { 
-            const jwtToken = res.headers.get('Authorization');
+    // Changed login to async and added redirct to mainPage here.
+    const login = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/login', {
+                method:'POST',
+                headers: {'Content-Type':'application/json' },
+                body: JSON.stringify(user)
+            });
+            const jwtToken = response.headers.get('Authorization');
             if (jwtToken !== null) {
                 console.log(jwtToken);
-                sessionStorage.setItem("jwt", jwtToken);
+                sessionStorage.setItem('jwt', jwtToken);
+                setAuth(true);
                 history.push('/mainpage');
             }
-            return res.json();
-        })
-        .then((data) => {
+            const data = await response.json();
             console.log(data);
-            setUserData({...userData,  id: data.id});
-            setUserData({...userData,  firstName: data.firstName});
-            setUserData({...userData,  lastName: data.lastName});
-            setUserData({...userData,  email: data.email});
-            setUserData({...userData,  role: data.role});
+            setUserData({
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                role: data.role,
+            });
             console.log(userData);
-            sessionStorage.setItem("userInfo", userData);
-         })
-        .catch(err => console.log(err));
+            sessionStorage.setItem('userInfo', JSON.stringify(userData));
+        }
+        catch(err) {
+            console.error(err);
+        }
     }
 
     const linkStyle ={
@@ -53,10 +57,9 @@ function Login() {
         marginTop: "16px",
         textDecoration: "none",
         transition: 'color 0.3s ease',
-
-    ':hover': {
-        color: 'red',
-    },
+        ':hover': {
+            color: 'red',
+        },
     };
 
     return (

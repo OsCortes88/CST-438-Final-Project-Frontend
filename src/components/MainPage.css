@@ -27,6 +27,12 @@ nav {
     width: 3%;
 }
 
+.wishlist-logo{
+    padding-top: 5px;
+    float: left;
+    width: 3%;
+}
+
 nav ul {
     float: right;
 }
@@ -260,24 +266,74 @@ img {
 .item-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px; /* Increase the gap between cards */
-    margin: 30px auto; /* Increase the margin around the cards */
+    gap: 20px; 
+    margin: 30px auto; 
 }
 
 .item-card {
     text-align: center;
-    padding: 15px; /* Add some padding to the cards */
-    border-radius: 8px; /* Adjust the border-radius for rounded corners */
+    padding: 15px; 
+    border-radius: 8px; 
 
 }
   
-  .item-card img {
+.item-card img {
     width: 70%;
-    max-height: 350px; /* Set a maximum height for the images */
-    object-fit: cover; /* Ensure images cover the entire card */
-    border-radius: 8px; /* Adjust the border-radius for rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); /* Add a subtle box shadow */
-  }
+    max-height: 350px; 
+    object-fit: cover;
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.filter_btn{
+    background: #2a475e;
+    border: none;
+    border-radius: 21px;
+    box-shadow: 0px 1px 8px #171a21;
+    cursor: pointer;
+    color: white;
+    font-family: 'Raleway', sans-serif;
+    height: 42.3px;
+    margin: 0 auto;
+    margin-top: 15px;
+    transition: 0.25s;
+    width: 153px;
+}
+
+.filter_btn:hover {
+    background: #437094;
+    box-shadow: 0px 1px 18px #212126;
+}
+
+.p-button {
+    margin: 0.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.p-button.p-highlight {
+    background-color: #66c0f4; 
+    color: white;
+}
+
+.p-button:not(.p-highlight) {
+    background-color: #e4f3fe;
+    color: black;
+}
+
+.sidebar {
+    padding: 10px;
+    color: white;
+    text-align: center;
+ 
+}
+
+.container {
+    margin-top: 0;
+    display: flex;
+    flex-direction: row;
+}
 
  /* Add these styles for the modal */
 .modal-overlay {

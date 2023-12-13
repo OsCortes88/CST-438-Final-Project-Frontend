@@ -1,14 +1,68 @@
 import './MainPage.css';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { SelectButton } from 'primereact/selectbutton';
 import Modal from 'react-modal';
 import ReactPlayer from 'react-player'
+
+// Genres for Select Buttons
+const allGenres = [
+  { name: 'Action', value: 'action' },
+  { name: 'Indie', value: 'indie' },
+  { name: 'Adventure', value: 'adventure' },
+  { name: 'RPG', value: 'role-playing-games-rpg'},
+  { name: 'Strategy', value: 'strategy' },
+  { name: 'Shooter', value: 'shooter' },
+  { name: 'Casual', value: 'casual' },
+  { name: 'Simulation', value: 'simulation' },
+  { name: 'Puzzle', value: 'puzzle' },
+  { name: 'Arcade', value: 'arcade' },
+  { name: 'Platformer', value: 'platformer' },
+  { name: 'Multiplayer', value: 'massively-multiplayer' },
+  { name: 'Racing', value: 'racing' },
+  { name: 'Sports', value: 'sports' },
+  { name: 'Fighting', value: 'fighting' },
+  { name: 'Family', value: 'family' },
+  { name: 'Board-Games', value: 'board-games' },
+  { name: 'Educational', value: 'educational' },
+  { name: 'Card', value: 'card' }
+];
+
+
+const Sidebar = ({ genresSelected, setGenresSelected, handleFilter, handleResetFilters }) => {
+  return (
+    <div className="sidebar-container">
+      <label htmlFor="nav" className="nav-btn">
+        <i></i>
+        <i></i>
+        <i></i>
+      </label>
+      <div className="sidebar">
+        <h3>Filter By Genre</h3>
+        <div className="card flex justify-content-center">
+          <SelectButton
+            value={genresSelected}
+            onChange={(e) => setGenresSelected(e.value)}
+            optionLabel="name"
+            options={allGenres}
+            multiple
+            className="custom-select-button"
+          />
+        </div>
+        <input className='filter_btn' type="submit" name="submit" value="Filter" onClick={handleFilter} />
+      </div>
+    </div>
+  );
+};
+
+const token = sessionStorage.getItem("jwt");
 
 function MainPage() {
   const [games, setGames] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedGame, setSelectedGame]= useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [genresSelected, setGenresSelected] = useState([]);
 
   const token = sessionStorage.getItem("jwt");
   const history = useHistory();
@@ -80,22 +134,41 @@ function MainPage() {
     );
   };
 
-  
+
   const getGames = async (page) => {
-    try {
-      // Get 20 games (first page)
-      const response = await fetch(`http://localhost:8080/videogames/20/${page}`, {
-        method: 'GET',
-        headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
-      });
-      if(!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.status}`);
+    if(genresSelected.length != 0) {
+      console.log(genresSelected);
+      try {
+        const filteredResponse = await fetch(`http://localhost:8080/videogames-by-genre/20/${page}/${genresSelected}`, {
+          method: 'GET',
+          headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+        });
+        if(!filteredResponse.ok) {
+          throw new Error(`Failed to fetch data: ${filteredResponse.status}`);
+        }
+        const res = await filteredResponse.json();
+        console.log(res);
+        setGames(res);
       }
-      const res = await response.json();
-      console.log(res);
-      setGames(res);
-    } catch(error) {
-      console.error(error);
+      catch(error) {
+        console.error(error);
+      }
+    }
+    else {
+      try {
+        const normalResponse = await fetch(`http://localhost:8080/videogames/20/${page}`, {
+            method: 'GET',
+            headers: {'Authorization' : token, 'Content-Type' : 'application/json'}
+          });
+        if(!normalResponse.ok) {
+          throw new Error(`Failed to fetch data: ${normalResponse.status}`);
+        }
+        const res = await normalResponse.json();
+        console.log(res);
+        setGames(res);
+      } catch(error) {
+        console.error(error);
+      }
     }
   }
 
@@ -148,11 +221,18 @@ function MainPage() {
     history.push('/');
   }
 
+  const handleFilter = (e) => {
+    e.preventDefault();
+    getGames(1);
+  }
+  
   return (
-    <div>
-      <div class="container">
+    <div className='container'>
+      <div className='sidebar-container'>
+        <Sidebar genresSelected={genresSelected} setGenresSelected={setGenresSelected} handleFilter={handleFilter} />
+      </div>
+      <div class="game-container">
         <nav>
-          <input type="checkbox" id="nav" class="hidden"></input>
           <label for="nav" class="nav-btn">
             <i></i>
             <i></i>
@@ -196,45 +276,43 @@ function MainPage() {
                 <div className="card_text">{data.name}</div>
               </div>
             ))}
-          </div>
-          <br></br><br></br>
-          <div className="center-pagination">
-            <div className="pagination">
-              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
-              <span>Page {currentPage}</span>
-              <a class="next-page" onClick={nextPage}>&#10095;</a>
             </div>
-          </div>
-        </div>
-      )}
-
-      {currentPage !== 1 && (
-        <div>
-          <h3>Other Games</h3>
-          <div className="item-cards">
-            {games.map((data) => (
-              <div key={data.id} className="item-card"> 
-                <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
-                <div className="card_text">{data.name}</div>
+            <br></br><br></br>
+            <div className="center-pagination">
+              <div className="pagination">
+                <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+                <span>Page {currentPage}</span>
+                <a class="next-page" onClick={nextPage}>&#10095;</a>
               </div>
-            ))}
-          </div>
-          <br></br><br></br>
-          <div className="center-pagination">
-            <div className="pagination">
-              <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
-              <span>Page {currentPage}</span>
-              <a class="next-page" onClick={nextPage}>&#10095;</a>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <br></br><br></br>
-      <footer className="footer">
-        <p>2023 California State University Final Project CST438.</p>
-      </footer>
-        
+        {currentPage !== 1 && (
+          <div>
+            <h3>Other Games</h3>
+            <div className="item-cards">
+              {games.map((data) => (
+                <div key={data.id} className="item-card"> 
+                  <img src={data.background_image} alt={data.name} onClick={() => openModal(data)}/>
+                  <div className="card_text">{data.name}</div>
+                </div>
+              ))}
+            </div>
+            <br></br><br></br>
+            <div className="center-pagination">
+              <div className="pagination">
+                <a class="prev-page" onClick={prevPage} disabled={currentPage === 1}>&#10094;</a>
+                <span>Page {currentPage}</span>
+                <a class="next-page" onClick={nextPage}>&#10095;</a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <br></br><br></br>
+
+      </div>
       {/* Render modal */}
       <Modal
         isOpen={selectedGame !== null}
